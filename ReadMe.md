@@ -7,6 +7,20 @@ mvn spring-boot:run
 Get:
 http://localhost:8088/payment/status
 
+-- Add card  post
+http://localhost:8088/payment/addcard
+
+{
+    "cardNumber": "1111111111111111",
+    "cardHolder": "nupur sharma",
+    "cvv": "999",
+    "expiryDate": "2025-12-31",
+    "balance": 10000.00,
+    "createdBy": "admin",
+    "updatedBy": "admin"
+}
+
+
 
 URL: POST 
 http://localhost:8088/payment/initiate
@@ -49,7 +63,12 @@ use test;
 db.auth("testUser", passwordPrompt()) ;
 
 db.credit_cards.drop()
+db.transactions.drop()
+db.otp_requests.drop()
+
 db.credit_cards.find();
+db.transactions.find();
+db.otp_requests.find();
 
 db.credit_cards.insertMany([
     {

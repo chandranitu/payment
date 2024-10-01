@@ -14,8 +14,11 @@ import com.example.repository.CreditCardRepository;
 import com.example.repository.OTPRequestRepository;
 import com.example.repository.TransactionRepository;
 
+/**
+ * Service class responsible for handling payment operations like adding credit cards,
+ * initiating payments, and OTP verification.
+ */
 @Service
-
 public class PaymentService {
 
 	@Autowired
@@ -27,6 +30,26 @@ public class PaymentService {
 	@Autowired
 	private OTPRequestRepository otpRequestRepository;
 
+	/**
+	 * Adds a new credit card to the repository.
+	 * 
+	 * @param creditCard the CreditCard object containing card details to be added
+	 * @return the saved CreditCard object
+	 */
+	public CreditCard addCreditCard(CreditCard creditCard) {
+        return creditCardRepository.save(creditCard);
+    } 
+
+	/**
+	 * Initiates a payment process for a given credit card.
+	 * Validates card details, checks the available balance, generates OTP, and creates a pending transaction.
+	 * 
+	 * @param cardNumber the card number of the credit card
+	 * @param cvv the CVV of the credit card
+	 * @param amount the amount to be charged
+	 * @return the created Transaction object with pending status
+	 * @throws IllegalArgumentException if the card number, CVV, or balance is invalid
+	 */
 	public Transaction initiatePayment(String cardNumber, String cvv, BigDecimal amount) {
 		// Fetch credit card by card number
 		System.out.println("Card Number:-->>> " + cardNumber);
@@ -69,6 +92,15 @@ public class PaymentService {
 		return transaction;
 	}
 
+	/**
+	 * Verifies the OTP for a given transaction. If the OTP is valid and not expired,
+	 * the transaction is approved, and the balance is deducted from the credit card.
+	 * 
+	 * @param transactionId the ID of the transaction being verified
+	 * @param otp the OTP provided by the user
+	 * @return the updated Transaction object with approved status
+	 * @throws IllegalArgumentException if the transaction ID or OTP is invalid
+	 */
 	public Transaction verifyOtp(String transactionId, String otp) {
 		// Fetch transaction by ID
 		Transaction transaction = transactionRepository.findById(transactionId)
@@ -78,7 +110,6 @@ public class PaymentService {
 		OTPRequest otpRequest = otpRequestRepository.findByOtpAndCreditCardIdAndExpiresAtAfter(otp,
 				transaction.getCreditCard().getId(), LocalDateTime.now())
 				.orElseThrow(() -> new IllegalArgumentException("Invalid or expired OTP"));
-				
 
 		// Approve transaction and deduct balance
 		transaction.setStatus("approved");
@@ -93,7 +124,11 @@ public class PaymentService {
 		return transaction;
 	}
 
-	// Helper method to generate a 6-digit OTP
+	/**
+	 * Helper method to generate a 6-digit OTP.
+	 * 
+	 * @return a randomly generated 6-digit OTP as a String
+	 */
 	private String generateOtp() {
 		return String.format("%06d", new Random().nextInt(999999));
 	}
