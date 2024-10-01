@@ -36,9 +36,33 @@ public class PaymentService {
 	 * @param creditCard the CreditCard object containing card details to be added
 	 * @return the saved CreditCard object
 	 */
+
+
 	public CreditCard addCreditCard(CreditCard creditCard) {
         return creditCardRepository.save(creditCard);
     } 
+
+
+	/**
+     * Update the credit card details.
+     * 
+     * @param creditCard The credit card details to update.
+     * @return The updated CreditCard object.
+     */
+    public CreditCard updateCreditCard(CreditCard creditCard) {
+        // Check if the card exists in the database
+        CreditCard existingCard = creditCardRepository.findByCardNumber(creditCard.getCardNumber())
+                .orElseThrow(() -> new IllegalArgumentException("Credit Card not found"));
+
+        // Update relevant fields
+        existingCard.setCardNumber(creditCard.getCardNumber());
+        existingCard.setExpiryDate(creditCard.getExpiryDate());
+        existingCard.setCardHolder(creditCard.getCardHolder());
+        existingCard.setCvv(creditCard.getCvv());
+
+        // Save the updated credit card back to the repository
+        return creditCardRepository.save(existingCard);
+    }
 
 	/**
 	 * Initiates a payment process for a given credit card.
@@ -132,4 +156,6 @@ public class PaymentService {
 	private String generateOtp() {
 		return String.format("%06d", new Random().nextInt(999999));
 	}
+
+    
 }

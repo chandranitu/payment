@@ -2,6 +2,8 @@ package com.example.model;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,12 +24,16 @@ public class OTPRequest {
     private String otp; // The generated OTP code
     private LocalDateTime expiresAt; // Expiration timestamp for the OTP
 
+    // Logger for tracking the activity in this class
+    private static final Logger logger = LoggerFactory.getLogger(OTPRequest.class);
+
     /**
      * Gets the unique identifier of this OTP request.
      * 
      * @return the ID of the OTP request
      */
     public String getId() {
+        logger.debug("Getting OTPRequest ID: {}", id);
         return id;
     }
 
@@ -37,6 +43,7 @@ public class OTPRequest {
      * @param id the new ID to set
      */
     public void setId(String id) {
+        logger.debug("Setting OTPRequest ID to: {}", id);
         this.id = id;
     }
 
@@ -46,6 +53,7 @@ public class OTPRequest {
      * @return the associated credit card
      */
     public CreditCard getCreditCard() {
+        logger.debug("Getting CreditCard for OTPRequest ID: {}", id);
         return creditCard;
     }
 
@@ -55,6 +63,7 @@ public class OTPRequest {
      * @param creditCard the credit card to associate
      */
     public void setCreditCard(CreditCard creditCard) {
+        logger.debug("Setting CreditCard for OTPRequest ID: {}", id);
         this.creditCard = creditCard;
     }
 
@@ -64,6 +73,7 @@ public class OTPRequest {
      * @return the OTP code
      */
     public String getOtp() {
+        logger.debug("Getting OTP for OTPRequest ID: {}", id);
         return otp;
     }
 
@@ -73,6 +83,7 @@ public class OTPRequest {
      * @param otp the new OTP code to set
      */
     public void setOtp(String otp) {
+        logger.debug("Setting OTP for OTPRequest ID: {}", id);
         this.otp = otp;
     }
 
@@ -82,6 +93,7 @@ public class OTPRequest {
      * @return the expiration timestamp
      */
     public LocalDateTime getExpiresAt() {
+        logger.debug("Getting expiration time for OTPRequest ID: {}", id);
         return expiresAt;
     }
 
@@ -91,6 +103,7 @@ public class OTPRequest {
      * @param expiresAt the new expiration timestamp to set
      */
     public void setExpiresAt(LocalDateTime expiresAt) {
+        logger.debug("Setting expiration time for OTPRequest ID: {}", id);
         this.expiresAt = expiresAt;
     }
 

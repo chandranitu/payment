@@ -7,7 +7,7 @@ mvn spring-boot:run
 Get:
 http://localhost:8088/payment/status
 
--- Add card  post
+-- Add credit card -- post method
 http://localhost:8088/payment/addcard
 
 {
@@ -33,16 +33,25 @@ Request Body: ->raw
 }
 
 
-POST:
+#POST:
 http://localhost:8088/payment/verify
 
 Request Body:
 
 {
-    "transactionId": 66fb2176ecf1625decca60d2,
-    "otp": "467868"
+    "transactionId": "66fb5a86218c02f14096403e",
+    "otp": "264224"
 }
 
+#update card put method
+http://localhost:8088/payment/updatecard
+
+{
+    "cardNumber": "3333333333333333",
+    "cardHolder": "xyz sharma",
+    "expiryDate": "2022-10-01",
+    "cvv": "123"
+}
 
 
 # mongo db docker
