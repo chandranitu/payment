@@ -1,9 +1,13 @@
 package com.example.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,12 +94,35 @@ public class PaymentController {
      * @param creditCard The updated credit card details.
      * @return ResponseEntity containing the updated CreditCard.
      */
-    
+
     @PutMapping("/updatecard")
     public ResponseEntity<CreditCard> updateCreditCard(@RequestBody CreditCard creditCard) {
         CreditCard updatedCard = paymentService.updateCreditCard(creditCard); // Update credit card details using the
                                                                               // service
         return ResponseEntity.ok(updatedCard); // Return the updated card with 200 status
+    }
+
+    /**
+     * Endpoint to delete a saved credit card.
+     * 
+     * @param cardNumber The credit card number to delete.
+     * @return ResponseEntity with status of deletion.
+     */
+    @DeleteMapping("/deletecard/{cardNumber}")
+    public ResponseEntity<Void> deleteCreditCard(@PathVariable String cardNumber) {
+        paymentService.deleteCreditCard(cardNumber); // Delete the credit card using the service
+        return ResponseEntity.noContent().build(); // Return 204 status with no content
+    }
+
+    /**
+     * Endpoint to get all stored credit cards.
+     * 
+     * @return ResponseEntity containing the list of credit cards and HTTP status.
+     */
+    @GetMapping("/allcards")
+    public ResponseEntity<List<CreditCard>> getAllCreditCards() {
+        List<CreditCard> cards = paymentService.getAllCreditCards(); // Fetch all cards from the service
+        return ResponseEntity.ok(cards); // Return the list with 200 status
     }
 
 }

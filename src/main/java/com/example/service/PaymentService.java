@@ -2,6 +2,7 @@ package com.example.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,29 @@ public class PaymentService {
 
         // Save the updated credit card back to the repository
         return creditCardRepository.save(existingCard);
+    }
+
+	/**
+     * Deletes a credit card by its card number.
+     * 
+     * @param cardNumber The credit card number to delete.
+     * @throws IllegalArgumentException if the card is not found.
+     */
+    public void deleteCreditCard(String cardNumber) {
+        creditCardRepository.findByCardNumber(cardNumber)
+                .ifPresentOrElse(
+                        card -> creditCardRepository.delete(card),
+                        () -> { throw new IllegalArgumentException("Credit Card not found"); }
+                );
+    }
+
+	/**
+     * Fetch all credit cards from the database.
+     * 
+     * @return A list of all stored credit cards.
+     */
+    public List<CreditCard> getAllCreditCards() {
+        return creditCardRepository.findAll(); // Return all credit cards
     }
 
 	/**

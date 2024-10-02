@@ -53,6 +53,17 @@ http://localhost:8088/payment/updatecard
     "cvv": "123"
 }
 
+#DELETE card  delete method
+http://localhost:8088/payment/deletecard/3333333333333333
+
+Success-- (204 No Content):
+
+
+# return all cards
+Method: GET
+URL: http://localhost:8088/payment/allcards
+
+
 
 # mongo db docker
 docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 -p 27017:27017 mongo

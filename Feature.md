@@ -59,18 +59,6 @@ public ResponseEntity<String> getTransactionStatus(@PathVariable String transact
 
 
 
-/**
- * Endpoint to delete a saved credit card.
- * 
- * @param cardNumber The credit card number to delete.
- * @return ResponseEntity with status of deletion.
- */
-@DeleteMapping("/deletecard/{cardNumber}")
-public ResponseEntity<Void> deleteCreditCard(@PathVariable String cardNumber) {
-    paymentService.deleteCreditCard(cardNumber); // Delete the credit card using the service
-    return ResponseEntity.noContent().build(); // Return 204 status with no content
-}
-
 
 /**
  * Endpoint to set a spending limit for a credit card.
