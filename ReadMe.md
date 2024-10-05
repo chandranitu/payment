@@ -101,6 +101,18 @@ Method: GET
 URL: http://localhost:8088/payment/history/4444444444444444
 
 
+# recurring payment
+method post
+http://localhost:8088/payment/recurring
+{
+    "cardNumber": "4444444444444444",
+    "amount": 100.00,
+    "frequency": "MONTHLY",
+    "startDate": "2024-10-05",
+    "endDate": "2025-10-05"
+}
+
+response- Recurring payment scheduled with ID: 91b94f6f-e0d4-4a0d-9fe3-89c2bc22cdef
 
 
 

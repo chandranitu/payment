@@ -10,7 +10,6 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.example.model.CreditCard;
@@ -29,6 +28,7 @@ import com.example.repository.TransactionRepository;
 public class PaymentService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
+	
 
 	@Autowired
 	private CreditCardRepository creditCardRepository;
@@ -38,6 +38,8 @@ public class PaymentService {
 
 	@Autowired
 	private OTPRequestRepository otpRequestRepository;
+
+	
 
 	@Autowired
 	public PaymentService(TransactionRepository transactionRepository, CreditCardRepository creditCardRepository) {
@@ -291,5 +293,8 @@ public class PaymentService {
 
         return transactions;
     }
+
+    
+	
 
 }

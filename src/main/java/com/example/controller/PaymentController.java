@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.CreditCard;
+import com.example.model.RecurringPayment;
 import com.example.model.Transaction;
 import com.example.request.OtpVerificationRequest;
 import com.example.request.PaymentRequest;
 import com.example.service.PaymentService;
+import com.example.service.RecurringService;
 
 import org.slf4j.Logger;
 
@@ -34,6 +36,9 @@ public class PaymentController {
 
     @Autowired
     private PaymentService paymentService; // Service to handle payment logic
+
+    @Autowired
+    private RecurringService recurringService; // Service to handle recurring logic
 
     /**
      * Health check endpoint to verify if the payment service is running.
@@ -155,5 +160,43 @@ public class PaymentController {
         List<Transaction> transactions = paymentService.getTransactionHistory(cardNumber); // Fetch transaction history
         return ResponseEntity.ok(transactions); // Return the transaction list with 200 status
     }
+
+    /**
+ * Endpoint to set up recurring payments for a credit card.
+ * 
+ * @param request The payment request with details about the recurrence.
+ * @return ResponseEntity containing the recurring payment details.
+ */
+
+ @PostMapping("/recurring")
+public ResponseEntity<String> setupRecurringPayment(@RequestBody RecurringPayment request) {
+    // Log the start of the recurring payment setup process
+    logger.info("Setting up recurring payment for card: {} with amount: {}", request.getCardNumber(), request.getAmount());
+    
+    try {
+        // Use the recurringService instance to set up the recurring payment
+        String scheduleId = recurringService.setupRecurringPayment(request);
+        
+        // Log the successful setup
+        logger.info("Recurring payment scheduled with ID: {}", scheduleId);
+        
+        // Return a response with the schedule ID and 200 OK status
+        return ResponseEntity.ok("Recurring payment scheduled with ID: " + scheduleId);
+    } catch (IllegalArgumentException ex) {
+        // Log the error if any validation or processing issue occurs
+        logger.error("Failed to set up recurring payment: {}", ex.getMessage());
+        
+        // Return a bad request response with the error message
+        return ResponseEntity.badRequest().body("Failed to set up recurring payment: " + ex.getMessage());
+    } catch (Exception ex) {
+        // Log any other unexpected errors
+        logger.error("Unexpected error occurred: {}", ex.getMessage());
+        
+        // Return a server error response
+        return ResponseEntity.status(500).body("Internal server error occurred while setting up recurring payment");
+    }
+}
+
+
 
 }
