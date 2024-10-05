@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,16 @@ import com.example.request.OtpVerificationRequest;
 import com.example.request.PaymentRequest;
 import com.example.service.PaymentService;
 
+import org.slf4j.Logger;
+
 /**
  * Controller for handling payment-related operations.
  */
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     @Autowired
     private PaymentService paymentService; // Service to handle payment logic
@@ -123,6 +128,20 @@ public class PaymentController {
     public ResponseEntity<List<CreditCard>> getAllCreditCards() {
         List<CreditCard> cards = paymentService.getAllCreditCards(); // Fetch all cards from the service
         return ResponseEntity.ok(cards); // Return the list with 200 status
+    }
+
+    /**
+     * Endpoint to process a refund for a payment transaction.
+     * 
+     * @param transactionId The ID of the transaction to be refunded.
+     * @return ResponseEntity containing the refunded Transaction.
+     */
+
+    @PostMapping("/refund")
+    public ResponseEntity<Transaction> refundPayment(@RequestBody String transactionId) {
+        Transaction refundedTransaction = paymentService.refundPayment(transactionId); // Refund payment using the
+        logger.info(" In refund section "); // service
+        return ResponseEntity.ok(refundedTransaction); // Return the refunded transaction details with 200 status
     }
 
 }

@@ -4,7 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +19,14 @@ import com.example.repository.OTPRequestRepository;
 import com.example.repository.TransactionRepository;
 
 /**
- * Service class responsible for handling payment operations like adding credit cards,
+ * Service class responsible for handling payment operations like adding credit
+ * cards,
  * initiating payments, and OTP verification.
  */
 @Service
 public class PaymentService {
+
+	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
 	@Autowired
 	private CreditCardRepository creditCardRepository;
@@ -31,6 +37,12 @@ public class PaymentService {
 	@Autowired
 	private OTPRequestRepository otpRequestRepository;
 
+	@Autowired
+	public PaymentService(TransactionRepository transactionRepository, CreditCardRepository creditCardRepository) {
+		this.transactionRepository = transactionRepository;
+		this.creditCardRepository = creditCardRepository;
+	}
+
 	/**
 	 * Adds a new credit card to the repository.
 	 * 
@@ -38,65 +50,66 @@ public class PaymentService {
 	 * @return the saved CreditCard object
 	 */
 
-
 	public CreditCard addCreditCard(CreditCard creditCard) {
-        return creditCardRepository.save(creditCard);
-    } 
-
-
-	/**
-     * Update the credit card details.
-     * 
-     * @param creditCard The credit card details to update.
-     * @return The updated CreditCard object.
-     */
-    public CreditCard updateCreditCard(CreditCard creditCard) {
-        // Check if the card exists in the database
-        CreditCard existingCard = creditCardRepository.findByCardNumber(creditCard.getCardNumber())
-                .orElseThrow(() -> new IllegalArgumentException("Credit Card not found"));
-
-        // Update relevant fields
-        existingCard.setCardNumber(creditCard.getCardNumber());
-        existingCard.setExpiryDate(creditCard.getExpiryDate());
-        existingCard.setCardHolder(creditCard.getCardHolder());
-        existingCard.setCvv(creditCard.getCvv());
-
-        // Save the updated credit card back to the repository
-        return creditCardRepository.save(existingCard);
-    }
+		return creditCardRepository.save(creditCard);
+	}
 
 	/**
-     * Deletes a credit card by its card number.
-     * 
-     * @param cardNumber The credit card number to delete.
-     * @throws IllegalArgumentException if the card is not found.
-     */
-    public void deleteCreditCard(String cardNumber) {
-        creditCardRepository.findByCardNumber(cardNumber)
-                .ifPresentOrElse(
-                        card -> creditCardRepository.delete(card),
-                        () -> { throw new IllegalArgumentException("Credit Card not found"); }
-                );
-    }
+	 * Update the credit card details.
+	 * 
+	 * @param creditCard The credit card details to update.
+	 * @return The updated CreditCard object.
+	 */
+	public CreditCard updateCreditCard(CreditCard creditCard) {
+		// Check if the card exists in the database
+		CreditCard existingCard = creditCardRepository.findByCardNumber(creditCard.getCardNumber())
+				.orElseThrow(() -> new IllegalArgumentException("Credit Card not found"));
+
+		// Update relevant fields
+		existingCard.setCardNumber(creditCard.getCardNumber());
+		existingCard.setExpiryDate(creditCard.getExpiryDate());
+		existingCard.setCardHolder(creditCard.getCardHolder());
+		existingCard.setCvv(creditCard.getCvv());
+
+		// Save the updated credit card back to the repository
+		return creditCardRepository.save(existingCard);
+	}
 
 	/**
-     * Fetch all credit cards from the database.
-     * 
-     * @return A list of all stored credit cards.
-     */
-    public List<CreditCard> getAllCreditCards() {
-        return creditCardRepository.findAll(); // Return all credit cards
-    }
+	 * Deletes a credit card by its card number.
+	 * 
+	 * @param cardNumber The credit card number to delete.
+	 * @throws IllegalArgumentException if the card is not found.
+	 */
+	public void deleteCreditCard(String cardNumber) {
+		creditCardRepository.findByCardNumber(cardNumber)
+				.ifPresentOrElse(
+						card -> creditCardRepository.delete(card),
+						() -> {
+							throw new IllegalArgumentException("Credit Card not found");
+						});
+	}
+
+	/**
+	 * Fetch all credit cards from the database.
+	 * 
+	 * @return A list of all stored credit cards.
+	 */
+	public List<CreditCard> getAllCreditCards() {
+		return creditCardRepository.findAll(); // Return all credit cards
+	}
 
 	/**
 	 * Initiates a payment process for a given credit card.
-	 * Validates card details, checks the available balance, generates OTP, and creates a pending transaction.
+	 * Validates card details, checks the available balance, generates OTP, and
+	 * creates a pending transaction.
 	 * 
 	 * @param cardNumber the card number of the credit card
-	 * @param cvv the CVV of the credit card
-	 * @param amount the amount to be charged
+	 * @param cvv        the CVV of the credit card
+	 * @param amount     the amount to be charged
 	 * @return the created Transaction object with pending status
-	 * @throws IllegalArgumentException if the card number, CVV, or balance is invalid
+	 * @throws IllegalArgumentException if the card number, CVV, or balance is
+	 *                                  invalid
 	 */
 	public Transaction initiatePayment(String cardNumber, String cvv, BigDecimal amount) {
 		// Fetch credit card by card number
@@ -141,11 +154,13 @@ public class PaymentService {
 	}
 
 	/**
-	 * Verifies the OTP for a given transaction. If the OTP is valid and not expired,
-	 * the transaction is approved, and the balance is deducted from the credit card.
+	 * Verifies the OTP for a given transaction. If the OTP is valid and not
+	 * expired,
+	 * the transaction is approved, and the balance is deducted from the credit
+	 * card.
 	 * 
 	 * @param transactionId the ID of the transaction being verified
-	 * @param otp the OTP provided by the user
+	 * @param otp           the OTP provided by the user
 	 * @return the updated Transaction object with approved status
 	 * @throws IllegalArgumentException if the transaction ID or OTP is invalid
 	 */
@@ -181,5 +196,55 @@ public class PaymentService {
 		return String.format("%06d", new Random().nextInt(999999));
 	}
 
-    
+	public Transaction refundPayment(String transactionId) {
+		// Log the start of the refund process
+		logger.info("Attempting to refund transaction with ID: {}", transactionId);
+
+		// Fetch the transaction by ID
+		Optional<Transaction> transactionOptional = transactionRepository.findById(transactionId);
+		if (transactionOptional.isEmpty()) {
+			logger.error("Transaction with ID {} not found.", transactionId);
+			throw new IllegalArgumentException("Transaction with ID " + transactionId + " not found.");
+		}
+
+		// Get the transaction object
+		Transaction transaction = transactionOptional.get();
+		BigDecimal refundAmount = transaction.getAmount(); // Assuming 'getAmount' returns the transaction amount
+		logger.info("Refund amount: {}", refundAmount);
+
+		// Fetch the associated card number from the transaction
+		CreditCard creditCardNumber = transaction.getCreditCard(); // Assuming 'getCreditCard()' returns the card number
+		logger.info("Associated credit card number: {}", creditCardNumber);
+
+		// Fetch the account associated with the transaction using the credit card
+		// number
+
+		Optional<CreditCard> accountOptional = creditCardRepository.findByCardNumber(creditCardNumber.getCardNumber());
+		if (accountOptional.isEmpty()) {
+			logger.error("Credit card associated with transaction ID {} not found.", transactionId);
+			throw new IllegalArgumentException("Credit card not found for transaction " + transactionId);
+		}
+
+		// Get the account object
+		CreditCard creditCard = accountOptional.get();
+		logger.info("Current account balance: {}", creditCard.getBalance());
+
+		// Add the refund amount to the account balance
+		BigDecimal newBalance = creditCard.getBalance().add(refundAmount);
+		creditCard.setBalance(newBalance); // Assuming 'setBalance' method exists
+		logger.info("New account balance after refund: {}", newBalance);
+
+		// Save the updated credit card account to the database
+		creditCardRepository.save(creditCard);
+		logger.info("Account balance updated successfully.");
+
+		// Update the transaction status to 'refunded'
+		transaction.setStatus("refunded"); // Assuming 'setStatus' method exists
+		transactionRepository.save(transaction);
+		logger.info("Transaction status updated to 'refunded'.");
+
+		// Return the refunded transaction
+		return transaction;
+	}
+
 }

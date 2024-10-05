@@ -1,13 +1,21 @@
 mvn clean install
-
+mvn clean install -U
+mvn dependency:tree
 mvn spring-boot:run
+
+http://localhost:8088/swagger-ui/index.html
+
+# acuator
+http://localhost:8088/actuator/mappings
+
 
 ## Request and response from postman. This project in mongo
 
-Get:
+# GET: status
 http://localhost:8088/payment/status
 
--- Add credit card -- post method
+
+# Add credit card -- post method
 http://localhost:8088/payment/addcard
 
 {
@@ -21,8 +29,7 @@ http://localhost:8088/payment/addcard
 }
 
 
-
-URL: POST 
+# POST  payment initiate
 http://localhost:8088/payment/initiate
 Request Body: ->raw
 
@@ -33,7 +40,7 @@ Request Body: ->raw
 }
 
 
-#POST:
+# POST:  verify transaction
 http://localhost:8088/payment/verify
 
 Request Body:
@@ -43,7 +50,7 @@ Request Body:
     "otp": "264224"
 }
 
-#update card put method
+# PUT  card update  
 http://localhost:8088/payment/updatecard
 
 {
@@ -53,7 +60,15 @@ http://localhost:8088/payment/updatecard
     "cvv": "123"
 }
 
-#DELETE card  delete method
+# refund
+http://localhost:8088/payment/refund
+
+# Send a Plain Transaction ID
+66ffd6e640762203906d9b19
+
+
+
+# DELETE card  delete method
 http://localhost:8088/payment/deletecard/3333333333333333
 
 Success-- (204 No Content):

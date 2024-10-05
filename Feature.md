@@ -1,10 +1,3 @@
-@PostMapping("/refund")
-    public ResponseEntity<Transaction> refundPayment(@RequestBody String transactionId) {
-        Transaction refundedTransaction = paymentService.refundPayment(transactionId); // Refund payment using the
-                                                                                       // service
-        return ResponseEntity.ok(refundedTransaction); // Return the refunded transaction details with 200 status
-    }
-
 
     /**
      * Endpoint to get the transaction history for a specific credit card.
