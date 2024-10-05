@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.example.model.CreditCard;
@@ -113,9 +115,9 @@ public class PaymentService {
 	 */
 	public Transaction initiatePayment(String cardNumber, String cvv, BigDecimal amount) {
 		// Fetch credit card by card number
-		System.out.println("Card Number:-->>> " + cardNumber);
-		System.out.println("cvv:-->>> " + cvv);
-		System.out.println("amount:-->>> " + amount);
+
+		logger.info("Attempting to Initiate transaction with : {}", cardNumber, cvv, amount);
+
 		CreditCard creditCard = creditCardRepository.findByCardNumber(cardNumber)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid card number"));
 
@@ -246,5 +248,48 @@ public class PaymentService {
 		// Return the refunded transaction
 		return transaction;
 	}
+
+	/**
+	 * Retrieves the transaction history for a given credit card number.
+	 *
+	 * @param cardNumber the credit card number to search for transactions
+	 * @return a list of transactions associated with the credit card
+	 */
+/* 
+	 public Transaction getTransactionHistory(String cardNumber) {
+		logger.info("Fetching transaction history for card number: {}", cardNumber);
+
+		// first fetch card reference id
+		// through reference id fetch transaction id
+		Optional<Transaction> transactionOptional = transactionRepository.findById(transactionId);
+		Transaction transaction = transactionOptional.get();
+		return transaction;
+	}*/
+
+	public List<Transaction> getTransactionHistory(String cardNumber) {
+        logger.info("Fetching transactions for credit card number: {}", cardNumber);
+
+        // Step 1: Fetch the CreditCard object by card number
+        Optional<CreditCard> creditCardOptional = creditCardRepository.findByCardNumber(cardNumber);
+
+        if (creditCardOptional.isEmpty()) {
+            logger.warn("No credit card found for card number: {}", cardNumber);
+            throw new IllegalArgumentException("Credit card not found for card number: " + cardNumber);
+        }
+
+        CreditCard creditCard = creditCardOptional.get();
+        ObjectId creditCardId = new ObjectId(creditCard.getId()); // Assuming 'getId' returns ObjectId
+
+        // Step 2: Fetch transactions using the CreditCard reference (DBRef)
+        List<Transaction> transactions = transactionRepository.findByCreditCardRef(creditCardId);
+
+        if (transactions.isEmpty()) {
+            logger.warn("No transactions found for credit card number: {}", cardNumber);
+        } else {
+            logger.info("Found {} transactions for credit card number: {}", transactions.size(), cardNumber);
+        }
+
+        return transactions;
+    }
 
 }

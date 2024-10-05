@@ -1,15 +1,5 @@
 
-    /**
-     * Endpoint to get the transaction history for a specific credit card.
-     * 
-     * @param cardNumber The card number to fetch transaction history for.
-     * @return ResponseEntity containing the list of transactions.
-     */
-    @GetMapping("/history/{cardNumber}")
-    public ResponseEntity<List<Transaction>> getTransactionHistory(@PathVariable String cardNumber) {
-        List<Transaction> transactions = paymentService.getTransactionHistory(cardNumber); // Fetch transaction history
-        return ResponseEntity.ok(transactions); // Return the transaction list with 200 status
-    }
+    
 
     /**
  * Endpoint to check for potential fraud in a transaction.

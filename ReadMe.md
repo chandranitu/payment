@@ -8,6 +8,24 @@ http://localhost:8088/swagger-ui/index.html
 # acuator
 http://localhost:8088/actuator/mappings
 
+# mongo db docker
+docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 -p 27017:27017 mongo
+docker exec -it  mongo bash   #run mongo
+
+use admin;
+db.createUser({
+  user: "testUser",
+  pwd: "testUser",
+  roles: [{ role: "dbAdmin", db: "test" },
+  { role: "readWrite", db: "admin" } ]
+})
+
+
+# Mongo login into console
+use test;
+db.auth("testUser", passwordPrompt()) ;
+
+
 
 ## Request and response from postman. This project in mongo
 
@@ -62,7 +80,6 @@ http://localhost:8088/payment/updatecard
 
 # refund
 http://localhost:8088/payment/refund
-
 # Send a Plain Transaction ID
 66ffd6e640762203906d9b19
 
@@ -79,24 +96,15 @@ Method: GET
 URL: http://localhost:8088/payment/allcards
 
 
+# return all transactions for a particular card
+Method: GET
+URL: http://localhost:8088/payment/history/4444444444444444
 
-# mongo db docker
-docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 -p 27017:27017 mongo
-docker exec -it  mongo bash   #run mongo
 
-use admin;
-db.createUser({
-  user: "testUser",
-  pwd: "testUser",
-  roles: [{ role: "dbAdmin", db: "test" },
-  { role: "readWrite", db: "admin" } ]
-})
+
 
 
 # Mongo
-use test;
-db.auth("testUser", passwordPrompt()) ;
-
 db.credit_cards.drop()
 db.transactions.drop()
 db.otp_requests.drop()

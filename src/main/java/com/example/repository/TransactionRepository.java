@@ -1,8 +1,11 @@
 package com.example.repository;
 
 import java.util.Optional;
+import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.model.Transaction;
@@ -37,4 +40,18 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
      * @return an Optional containing the matching Transaction, or empty if not found
      */
     Optional<Transaction> findById(String id);
+
+    /**
+     * Finds all Transactions by their associated credit card number.
+     * 
+     * This method returns a List of Transactions that are associated with the provided
+     * credit card number.
+     * 
+     * @param cardNumber the credit card number to search for
+     * @return a List of Transactions associated with the given credit card number
+     */
+   // @Query("{ 'creditCard.cardNumber': ?0 }")
+    //List<Transaction> findByCardNumber(String creditCard);
+     @Query("{ 'creditCard.$id': ?0 }")
+    List<Transaction> findByCreditCardRef(ObjectId creditCardId);
 }
