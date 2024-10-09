@@ -28,7 +28,6 @@ import com.example.repository.TransactionRepository;
 public class PaymentService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
-	
 
 	@Autowired
 	private CreditCardRepository creditCardRepository;
@@ -38,8 +37,6 @@ public class PaymentService {
 
 	@Autowired
 	private OTPRequestRepository otpRequestRepository;
-
-	
 
 	@Autowired
 	public PaymentService(TransactionRepository transactionRepository, CreditCardRepository creditCardRepository) {
@@ -257,44 +254,53 @@ public class PaymentService {
 	 * @param cardNumber the credit card number to search for transactions
 	 * @return a list of transactions associated with the credit card
 	 */
-/* 
-	 public Transaction getTransactionHistory(String cardNumber) {
-		logger.info("Fetching transaction history for card number: {}", cardNumber);
-
-		// first fetch card reference id
-		// through reference id fetch transaction id
-		Optional<Transaction> transactionOptional = transactionRepository.findById(transactionId);
-		Transaction transaction = transactionOptional.get();
-		return transaction;
-	}*/
+	/*
+	 * public Transaction getTransactionHistory(String cardNumber) {
+	 * logger.info("Fetching transaction history for card number: {}", cardNumber);
+	 * 
+	 * // first fetch card reference id
+	 * // through reference id fetch transaction id
+	 * Optional<Transaction> transactionOptional =
+	 * transactionRepository.findById(transactionId);
+	 * Transaction transaction = transactionOptional.get();
+	 * return transaction;
+	 * }
+	 */
 
 	public List<Transaction> getTransactionHistory(String cardNumber) {
-        logger.info("Fetching transactions for credit card number: {}", cardNumber);
+		logger.info("Fetching transactions for credit card number: {}", cardNumber);
 
-        // Step 1: Fetch the CreditCard object by card number
-        Optional<CreditCard> creditCardOptional = creditCardRepository.findByCardNumber(cardNumber);
+		// Step 1: Fetch the CreditCard object by card number
+		Optional<CreditCard> creditCardOptional = creditCardRepository.findByCardNumber(cardNumber);
 
-        if (creditCardOptional.isEmpty()) {
-            logger.warn("No credit card found for card number: {}", cardNumber);
-            throw new IllegalArgumentException("Credit card not found for card number: " + cardNumber);
-        }
+		if (creditCardOptional.isEmpty()) {
+			logger.warn("No credit card found for card number: {}", cardNumber);
+			throw new IllegalArgumentException("Credit card not found for card number: " + cardNumber);
+		}
 
-        CreditCard creditCard = creditCardOptional.get();
-        ObjectId creditCardId = new ObjectId(creditCard.getId()); // Assuming 'getId' returns ObjectId
+		CreditCard creditCard = creditCardOptional.get();
+		ObjectId creditCardId = new ObjectId(creditCard.getId()); // Assuming 'getId' returns ObjectId
 
-        // Step 2: Fetch transactions using the CreditCard reference (DBRef)
-        List<Transaction> transactions = transactionRepository.findByCreditCardRef(creditCardId);
+		// Step 2: Fetch transactions using the CreditCard reference (DBRef)
+		List<Transaction> transactions = transactionRepository.findByCreditCardRef(creditCardId);
 
-        if (transactions.isEmpty()) {
-            logger.warn("No transactions found for credit card number: {}", cardNumber);
-        } else {
-            logger.info("Found {} transactions for credit card number: {}", transactions.size(), cardNumber);
-        }
+		if (transactions.isEmpty()) {
+			logger.warn("No transactions found for credit card number: {}", cardNumber);
+		} else {
+			logger.info("Found {} transactions for credit card number: {}", transactions.size(), cardNumber);
+		}
 
-        return transactions;
-    }
+		return transactions;
+	}
 
-    
+	public String getTransactionStatus(String transactionId) {
+		Optional<Transaction> transaction = transactionRepository.findById(transactionId); 
 	
+		if (!transaction.isPresent()) {
+			throw new TransactionNotFoundException("Transaction not found for ID: " + transactionId);
+		}
+	
+		return transaction.get().getStatus(); // Assuming the Transaction object has a getStatus() method
+	}
 
 }

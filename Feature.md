@@ -1,14 +1,7 @@
-/**
- * Endpoint to check the status of a specific payment transaction.
- * 
- * @param transactionId The transaction ID to check.
- * @return ResponseEntity containing the transaction status.
- */
-@GetMapping("/status/{transactionId}")
-public ResponseEntity<String> getTransactionStatus(@PathVariable String transactionId) {
-    String status = paymentService.getTransactionStatus(transactionId); // Fetch the transaction status
-    return ResponseEntity.ok(status); // Return the status with 200 status
-}
+
+
+
+
     
 
 /**

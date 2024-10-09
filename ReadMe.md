@@ -22,6 +22,12 @@ db.createUser({
 
 
 # Mongo login into console
+
+test> use admin;
+switched to db admin
+admin> db.auth("admin", passwordPrompt()) ;
+Enter password -admin123
+
 use test;
 db.auth("testUser", passwordPrompt()) ;
 
@@ -113,6 +119,26 @@ http://localhost:8088/payment/recurring
 }
 
 response- Recurring payment scheduled with ID: 91b94f6f-e0d4-4a0d-9fe3-89c2bc22cdef
+
+# Search service
+method get
+http://localhost:8088/search/all
+
+{
+    "searchKey": "cardNumber",
+    "searchValue": "4444444444444444"
+}
+
+# Transaction status 
+method get
+http://localhost:8088/payment/status/{66fb88f93cd7e6658444fbb5}
+
+
+
+
+
+
+
 
 
 
