@@ -1,22 +1,6 @@
 
 
 
-
-    
-
-/**
- * Endpoint to cancel a pending transaction.
- * 
- * @param transactionId The ID of the transaction to cancel.
- * @return ResponseEntity indicating success or failure of the cancellation.
- */
-@PostMapping("/cancel/{transactionId}")
-public ResponseEntity<String> cancelTransaction(@PathVariable String transactionId) {
-    paymentService.cancelTransaction(transactionId); // Cancel the transaction
-    return ResponseEntity.ok("Transaction canceled successfully");
-}
-
-
     /**
  * Endpoint to check for potential fraud in a transaction.
  * 

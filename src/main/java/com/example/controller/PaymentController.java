@@ -209,15 +209,28 @@ public class PaymentController {
     @GetMapping("/status/{transactionId}")
     public ResponseEntity<String> getTransactionStatus(@PathVariable String transactionId) {
         try {
-        String status = paymentService.getTransactionStatus(transactionId);
-        return ResponseEntity.ok(status);
-    } catch (TransactionNotFoundException e) {
-        // Return 404 Not Found if the transaction is not found
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    } catch (Exception e) {
-        // Handle generic exceptions with a 500 Internal Server Error
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching transaction status.");
+            String status = paymentService.getTransactionStatus(transactionId);
+            return ResponseEntity.ok(status);
+        } catch (TransactionNotFoundException e) {
+            // Return 404 Not Found if the transaction is not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            // Handle generic exceptions with a 500 Internal Server Error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while fetching transaction status.");
+        }
     }
+
+    /**
+     * Endpoint to cancel a pending transaction.
+     * 
+     * @param transactionId The ID of the transaction to cancel.
+     * @return ResponseEntity indicating success or failure of the cancellation.
+     */
+    @PostMapping("/cancel/{transactionId}")
+    public ResponseEntity<String> cancelTransaction(@PathVariable String transactionId) {
+        paymentService.cancelTransaction(transactionId); // Cancel the transaction
+        return ResponseEntity.ok("Transaction canceled successfully");
     }
 
 }

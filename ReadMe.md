@@ -135,6 +135,12 @@ http://localhost:8088/payment/status/{66fb88f93cd7e6658444fbb5}
 
 
 
+# Cancel a pending Transaction  
+method post
+http://localhost:8088/payment/cancel/670ee05652d36523515c9354
+
+
+
 
 
 

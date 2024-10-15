@@ -303,4 +303,31 @@ public class PaymentService {
 		return transaction.get().getStatus(); // Assuming the Transaction object has a getStatus() method
 	}
 
+    public void cancelTransaction(String transactionId) {
+		// Fetch the transaction from the database
+		Transaction transaction = transactionRepository.findById(transactionId)
+			.orElseThrow(() -> new IllegalArgumentException("Transaction not found with ID: " + transactionId));
+		
+		// Check if the transaction is already completed or canceled
+		if ("COMPLETED".equals(transaction.getStatus())) {
+			throw new UnsupportedOperationException("Cannot cancel a completed transaction.");
+		} else if ("CANCELED".equals(transaction.getStatus())) {
+			throw new UnsupportedOperationException("Transaction is already canceled.");
+		}
+		
+		// Mark the transaction as canceled
+		transaction.setStatus("CANCELED");
+		transaction.setCreatedAt(LocalDateTime.now());
+	
+		// Save the updated transaction back to the database
+		transactionRepository.save(transaction);
+	
+		// If needed, perform any rollback or compensating actions here (e.g., refund payment)
+		// refundService.processRefund(transaction);
+	
+		// Log the cancellation
+		logger.info("Transaction with ID {} has been canceled.", transactionId);
+	}
+	
+
 }
