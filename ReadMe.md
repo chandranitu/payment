@@ -1,18 +1,25 @@
 mvn clean install
+
 mvn clean install -U
+
 mvn dependency:tree
+
 mvn spring-boot:run
 
 http://localhost:8088/swagger-ui/index.html
 
-# acuator
+# Acuator
+
 http://localhost:8088/actuator/mappings
 
 # mongo db docker
+
 docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 -p 27017:27017 mongo
+
 docker exec -it  mongo bash   #run mongo
 
 use admin;
+
 db.createUser({
   user: "testUser",
   pwd: "testUser",
@@ -24,11 +31,14 @@ db.createUser({
 # Mongo login into console
 
 test> use admin;
-switched to db admin
+
+
 admin> db.auth("admin", passwordPrompt()) ;
+
 Enter password -admin123
 
 use test;
+
 db.auth("testUser", passwordPrompt()) ;
 
 
@@ -40,6 +50,7 @@ http://localhost:8088/payment/status
 
 
 # Add credit card -- post method
+
 http://localhost:8088/payment/addcard
 
 {
@@ -54,7 +65,9 @@ http://localhost:8088/payment/addcard
 
 
 # POST  payment initiate
+
 http://localhost:8088/payment/initiate
+
 Request Body: ->raw
 
 {
@@ -65,6 +78,7 @@ Request Body: ->raw
 
 
 # POST:  verify transaction
+
 http://localhost:8088/payment/verify
 
 Request Body:
@@ -74,7 +88,10 @@ Request Body:
     "otp": "264224"
 }
 
-# PUT  card update  
+ -- for otp check logs
+
+# PUT method card update 
+
 http://localhost:8088/payment/updatecard
 
 {
@@ -84,32 +101,43 @@ http://localhost:8088/payment/updatecard
     "cvv": "123"
 }
 
-# refund
+# refund payment
+
 http://localhost:8088/payment/refund
+
 # Send a Plain Transaction ID
+
 66ffd6e640762203906d9b19
 
 
 
 # DELETE card  delete method
+
 http://localhost:8088/payment/deletecard/3333333333333333
 
 Success-- (204 No Content):
 
 
 # return all cards
+
 Method: GET
+
 URL: http://localhost:8088/payment/allcards
 
 
 # return all transactions for a particular card
+
 Method: GET
+
 URL: http://localhost:8088/payment/history/4444444444444444
 
 
 # recurring payment
+
 method post
+
 http://localhost:8088/payment/recurring
+
 {
     "cardNumber": "4444444444444444",
     "amount": 100.00,
@@ -120,8 +148,11 @@ http://localhost:8088/payment/recurring
 
 response- Recurring payment scheduled with ID: 91b94f6f-e0d4-4a0d-9fe3-89c2bc22cdef
 
+
 # Search service
+
 method get
+
 http://localhost:8088/search/all
 
 {
@@ -129,17 +160,27 @@ http://localhost:8088/search/all
     "searchValue": "4444444444444444"
 }
 
+
 # Transaction status 
+
 method get
-http://localhost:8088/payment/status/{66fb88f93cd7e6658444fbb5}
+
+http://localhost:8088/payment/status/670ee05652d36523515c9354
 
 
 
 # Cancel a pending Transaction  
+
 method post
+
 http://localhost:8088/payment/cancel/670ee05652d36523515c9354
 
 
+# Fraaud  Transaction 
+
+method get
+
+http://localhost:8088/payment/fraud-check/670ee05652d36523515c9354
 
 
 
@@ -148,13 +189,18 @@ http://localhost:8088/payment/cancel/670ee05652d36523515c9354
 
 
 
-# Mongo
+# Mongo commands
+
 db.credit_cards.drop()
+
 db.transactions.drop()
+
 db.otp_requests.drop()
 
 db.credit_cards.find();
+
 db.transactions.find();
+
 db.otp_requests.find();
 
 db.credit_cards.insertMany([
@@ -211,7 +257,9 @@ db.otp_requests.insertMany([
 # postgres 16
 
 docker run -d --name postgres16 -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres postgres:16 postgres
+
 docker exec -it postgres16 bash
+
 psql -U postgres
 
 create database payment;
@@ -262,5 +310,3 @@ INSERT INTO otp_requests (card_id, otp, expires_at)
 VALUES (1, '123456', CURRENT_TIMESTAMP + INTERVAL '5 minutes');
 INSERT INTO otp_requests (card_id, otp, expires_at)
 VALUES (2, '654321', CURRENT_TIMESTAMP + INTERVAL '1 minutes');
-
-

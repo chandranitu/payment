@@ -233,4 +233,16 @@ public class PaymentController {
         return ResponseEntity.ok("Transaction canceled successfully");
     }
 
+    /**
+     * Endpoint to check for potential fraud in a transaction.
+     * 
+     * @param transactionId The transaction ID to check for fraud.
+     * @return ResponseEntity indicating whether fraud is suspected.
+     */
+    @GetMapping("/fraud-check/{transactionId}")
+    public ResponseEntity<Boolean> fraudCheck(@PathVariable String transactionId) {
+        boolean isFraudulent = paymentService.checkForFraud(transactionId); // Check if the transaction is fraudulent
+        return ResponseEntity.ok(isFraudulent); // Return fraud status with 200 status
+    }
+
 }

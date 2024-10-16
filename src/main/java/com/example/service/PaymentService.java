@@ -328,6 +328,24 @@ public class PaymentService {
 		// Log the cancellation
 		logger.info("Transaction with ID {} has been canceled.", transactionId);
 	}
+
+	public boolean checkForFraud(String transactionId) {
+		// Simulate fraud detection logic
+		if (transactionId == null || transactionId.isEmpty()) {
+			throw new IllegalArgumentException("Transaction ID cannot be null or empty");
+		}
+	
+		// Here you can add actual fraud detection logic, like checking against a database, 
+		// calling an external service, or applying business rules.
+	
+		// For demonstration, we will use a simple rule: if the transactionId contains "fraud", we assume it's fraudulent.
+		if (transactionId.toLowerCase().contains("fraud")) {
+			return true; // Indicating this transaction is fraudulent
+		}
+		
+		// Otherwise, the transaction is not fraudulent
+		return false;
+	}
 	
 
 }
