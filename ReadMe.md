@@ -20,10 +20,20 @@ docker exec -it  mongo bash   #run mongo
 
 use admin;
 
+# dev
+
 db.createUser({
   user: "testUser",
   pwd: "testUser",
   roles: [{ role: "dbAdmin", db: "test" },
+  { role: "readWrite", db: "admin" } ]
+})
+
+# QA
+db.createUser({
+  user: "testUser1",
+  pwd: "testUser1",
+  roles: [{ role: "dbAdmin", db: "test1" },
   { role: "readWrite", db: "admin" } ]
 })
 
@@ -105,7 +115,7 @@ http://localhost:8088/payment/updatecard
 
 http://localhost:8088/payment/refund
 
-# Send a Plain Transaction ID
+ Send a Plain Transaction ID
 
 66ffd6e640762203906d9b19
 
