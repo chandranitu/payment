@@ -12,6 +12,11 @@ http://localhost:8088/swagger-ui/index.html
 
 http://localhost:8088/actuator/mappings
 
+
+# jenkins
+
+
+
 # mongo db docker
 
 docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 -p 27017:27017 mongo
