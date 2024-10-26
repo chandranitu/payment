@@ -192,12 +192,14 @@ http://localhost:8088/payment/cancel/670ee05652d36523515c9354
 
 
 # Fraaud  Transaction 
+https://memgraph.com/blog/how-to-develop-a-credit-card-fraud-detection-application-using-memgraph-flask-and-d3js
+https://www.romexsoft.com/blog/implement-credit-card-fraud-detection/
 
 method get
 
 http://localhost:8088/payment/fraud-check/670ee05652d36523515c9354
 
-
+# payment limit 
 
 
 
