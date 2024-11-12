@@ -4,7 +4,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/chandranitu/payment.git',
-                credentialsId: '84465c96-9185-4d6b-8f76-5d44899e7755'
+                credentialsId: '39d395ea-2683-4d98-9044-5295be7b0cb2'
             }
         }
         stage('Build') {
@@ -17,22 +17,11 @@ pipeline {
             steps {
                 script {
                     def remotePassword = 'Mko09ijn' 
-                    ssh -tt '${remotePassword}' ssh -o StrictHostKeyChecking=no chandra@10.10.10.60 << 'EOF'
-                    cd ~/app/
                     sh """
-                    sonar-scanner -Dsonar.projectKey=payment123 
-                                   -Dsonar.projectName="payment123" 
-                                   -Dsonar.projectVersion=1.0 
-                                   -Dsonar.sources=src 
-                                   -Dsonar.java.binaries=target 
-                                   -Dsonar.host.url=http://localhost:9000 
-                                   -Dsonar.login=admin 
-                                   -Dsonar.password=Mko09ijn@123  # Preferably use a token
-                                   -Dsonar.token=sqp_3be93e740a027aa1ec564fd051b31d421410010a 
-                                   -Dsonar.scm.provider=svn 
-                                   -Dsonar.exclusions=node_modules/**,src/environments/**,**/*.spec.ts,dist/**,**/docs/**,**/*.js,e2e/**,coverage/**,TLH-distributions/**,src/bsb-theme/css/** 
-                                   -Dsonar.ts.tslint.configPath=tslint.json 
-                                   -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+                    sshpass -p '${remotePassword}' ssh -o StrictHostKeyChecking=no chandra@192.168.68.128 << 'EOF'
+                    echo '${remotePassword}' | sudo -S bash -c 'cd /var/lib/jenkins/workspace/sonar && \\  
+                    cp /home/chandra/workspace-24/payment/sonar-project.properties /var/lib/jenkins/workspace/sonar && \\
+                    /home/chandra/sonar-scanner/bin/sonar-scanner -Dproject.settings=sonar-project.properties  '
                     """
                 }
             }
