@@ -23,7 +23,7 @@ public class Transaction {
 
     @DBRef
     private CreditCard creditCard; // Reference to the associated credit card
-
+    private CreditCardType cardType; // Renamed to more meaningful field (cardType)
     private BigDecimal amount; // The transaction amount
     private String otp; // The OTP used to authorize the transaction
     private String status; // Transaction status: "pending", "approved", "failed"
@@ -74,6 +74,24 @@ public class Transaction {
     public void setCreditCard(CreditCard creditCard) {
         logger.debug("Setting associated credit card for transaction ID: {}", id);
         this.creditCard = creditCard;
+    }
+
+    /**
+     * Gets the card type associated with this transaction.
+     * 
+     * @return the card type of the transaction
+     */
+    public CreditCardType getCardType() {
+        return cardType;
+    }
+
+    /**
+     * Sets the card type associated with this transaction.
+     * 
+     * @param cardType the card type to associate
+     */
+    public void setCardType(CreditCardType cardType) {
+        this.cardType = cardType;
     }
 
     /**

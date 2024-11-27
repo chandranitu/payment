@@ -17,6 +17,7 @@ http://localhost:8088/actuator/mappings
 
 # jenkins
 
+# security
 
 
 # mongo db docker
@@ -26,6 +27,8 @@ docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_R
 docker exec -it  mongo bash   #run mongo
 
 use admin;
+
+mongosh  --host localhost --port 27017 --username testUser --password testUser
 
 # dev
 
@@ -37,6 +40,7 @@ db.createUser({
 })
 
 # QA
+
 db.createUser({
   user: "testUser1",
   pwd: "testUser1",
@@ -49,10 +53,7 @@ db.createUser({
 
 test> use admin;
 
-
-admin> db.auth("admin", passwordPrompt()) ;
-
-Enter password -admin123
+admin> db.auth("admin", "admin123") ;
 
 use test;
 
@@ -71,8 +72,9 @@ http://localhost:8088/payment/status
 http://localhost:8088/payment/addcard
 
 {
-    "cardNumber": "1111111111111111",
-    "cardHolder": "nupur sharma",
+    "cardNumber": "4567456745674567",
+    "cardHolder": "Ram Mohan",
+    "cardType": "Visa",
     "cvv": "999",
     "expiryDate": "2025-12-31",
     "balance": 10000.00,
@@ -88,9 +90,10 @@ http://localhost:8088/payment/initiate
 Request Body: ->raw
 
 {
-    "cardNumber": "1234123412341234",
-    "cvv": "345",
-    "amount": 1000.00
+    "cardNumber": "6666666006666666",
+    "cvv": "999",
+    "cardType": "Visa",
+    "amount": 2000.00
 }
 
 
@@ -212,15 +215,9 @@ http://localhost:8088/payment/fraud-check/670ee05652d36523515c9354
 
 db.credit_cards.drop()
 
-db.transactions.drop()
-
-db.otp_requests.drop()
-
 db.credit_cards.find();
 
-db.transactions.find();
-
-db.otp_requests.find();
+show collections
 
 db.credit_cards.insertMany([
     {
@@ -272,6 +269,11 @@ db.otp_requests.insertMany([
     }
 ]);
 
+
+
+
+
+##################################### Misc
 
 # postgres 16
 

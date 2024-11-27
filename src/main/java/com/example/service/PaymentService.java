@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.model.CreditCard;
+import com.example.model.CreditCardType;
 import com.example.model.OTPRequest;
 import com.example.model.Transaction;
 import com.example.repository.CreditCardRepository;
@@ -68,6 +69,7 @@ public class PaymentService {
 
 		// Update relevant fields
 		existingCard.setCardNumber(creditCard.getCardNumber());
+		existingCard.setCardType(creditCard.getCardType());
 		existingCard.setExpiryDate(creditCard.getExpiryDate());
 		existingCard.setCardHolder(creditCard.getCardHolder());
 		existingCard.setCvv(creditCard.getCvv());
@@ -108,11 +110,12 @@ public class PaymentService {
 	 * @param cardNumber the card number of the credit card
 	 * @param cvv        the CVV of the credit card
 	 * @param amount     the amount to be charged
+	 * @param cardType   card type
 	 * @return the created Transaction object with pending status
 	 * @throws IllegalArgumentException if the card number, CVV, or balance is
 	 *                                  invalid
 	 */
-	public Transaction initiatePayment(String cardNumber, String cvv, BigDecimal amount) {
+	public Transaction initiatePayment(String cardNumber, String cardType, String cvv, BigDecimal amount) {
 		// Fetch credit card by card number
 
 		logger.info("Attempting to Initiate transaction with : {}", cardNumber, cvv, amount);
@@ -128,6 +131,12 @@ public class PaymentService {
 		// Validate balance
 		if (creditCard.getBalance().compareTo(amount) < 0) {
 			throw new IllegalArgumentException("Insufficient balance");
+		}
+        // Validate card type
+		CreditCardType cardTypeEnum = CreditCardType.valueOf(cardType.toUpperCase());
+		CreditCardType cardTypeFromCreditCard = CreditCardType.valueOf(creditCard.getCardType().toUpperCase());
+		if (cardTypeEnum != cardTypeFromCreditCard) {
+			throw new IllegalArgumentException("Card type mismatch");
 		}
 
 		// Create and save transaction
@@ -294,37 +303,38 @@ public class PaymentService {
 	}
 
 	public String getTransactionStatus(String transactionId) {
-		Optional<Transaction> transaction = transactionRepository.findById(transactionId); 
-	
+		Optional<Transaction> transaction = transactionRepository.findById(transactionId);
+
 		if (!transaction.isPresent()) {
 			throw new TransactionNotFoundException("Transaction not found for ID: " + transactionId);
 		}
-	
+
 		return transaction.get().getStatus(); // Assuming the Transaction object has a getStatus() method
 	}
 
-    public void cancelTransaction(String transactionId) {
+	public void cancelTransaction(String transactionId) {
 		// Fetch the transaction from the database
 		Transaction transaction = transactionRepository.findById(transactionId)
-			.orElseThrow(() -> new IllegalArgumentException("Transaction not found with ID: " + transactionId));
-		
+				.orElseThrow(() -> new IllegalArgumentException("Transaction not found with ID: " + transactionId));
+
 		// Check if the transaction is already completed or canceled
 		if ("COMPLETED".equals(transaction.getStatus())) {
 			throw new UnsupportedOperationException("Cannot cancel a completed transaction.");
 		} else if ("CANCELED".equals(transaction.getStatus())) {
 			throw new UnsupportedOperationException("Transaction is already canceled.");
 		}
-		
+
 		// Mark the transaction as canceled
 		transaction.setStatus("CANCELED");
 		transaction.setCreatedAt(LocalDateTime.now());
-	
+
 		// Save the updated transaction back to the database
 		transactionRepository.save(transaction);
-	
-		// If needed, perform any rollback or compensating actions here (e.g., refund payment)
+
+		// If needed, perform any rollback or compensating actions here (e.g., refund
+		// payment)
 		// refundService.processRefund(transaction);
-	
+
 		// Log the cancellation
 		logger.info("Transaction with ID {} has been canceled.", transactionId);
 	}
@@ -334,18 +344,19 @@ public class PaymentService {
 		if (transactionId == null || transactionId.isEmpty()) {
 			throw new IllegalArgumentException("Transaction ID cannot be null or empty");
 		}
-	
-		// Here you can add actual fraud detection logic, like checking against a database, 
+
+		// Here you can add actual fraud detection logic, like checking against a
+		// database,
 		// calling an external service, or applying business rules.
-	
-		// For demonstration, we will use a simple rule: if the transactionId contains "fraud", we assume it's fraudulent.
+
+		// For demonstration, we will use a simple rule: if the transactionId contains
+		// "fraud", we assume it's fraudulent.
 		if (transactionId.toLowerCase().contains("fraud")) {
 			return true; // Indicating this transaction is fraudulent
 		}
-		
+
 		// Otherwise, the transaction is not fraudulent
 		return false;
 	}
-	
 
 }

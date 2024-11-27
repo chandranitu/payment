@@ -72,7 +72,7 @@ public class PaymentController {
 
     @PostMapping("/initiate")
     public ResponseEntity<Transaction> initiatePayment(@RequestBody PaymentRequest request) {
-        Transaction transaction = paymentService.initiatePayment(request.getCardNumber(), request.getCvv(),
+        Transaction transaction = paymentService.initiatePayment(request.getCardNumber(), request.getCardType(),request.getCvv(),
                 request.getAmount()); // Initiate payment using the service
         return ResponseEntity.ok(transaction); // Return the transaction details with 200 status
     }

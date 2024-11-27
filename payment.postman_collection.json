@@ -1,0 +1,328 @@
+{
+	"info": {
+		"_postman_id": "be5b7de8-e9df-4ffd-ad6d-8af3229f28cc",
+		"name": "payment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "844193",
+		"_collection_link": "https://winter-escape-210343.postman.co/workspace/subex~55da24d3-9d84-4fae-895b-a6f628119c7e/collection/844193-be5b7de8-e9df-4ffd-ad6d-8af3229f28cc?action=share&source=collection_link&creator=844193"
+	},
+	"item": [
+		{
+			"name": "addcard",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cardNumber\": \"6666666006666666\",\n    \"cardHolder\": \"Rupesh sharma\",\n    \"cvv\": \"999\",\n    \"cardType\":\"Visa\",\n    \"expiryDate\": \"2025-11-30\",\n    \"balance\": 5434.00,\n    \"createdBy\": \"admin\",\n    \"updatedBy\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/payment/addcard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"addcard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n{\n    \"cardNumber\": \"4444444444444444\",\n    \"cvv\": \"555\",\n    \"amount\": 1500.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/payment/initiate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"initiate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verifyOTP",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\": \"6700b05d79547251a66f4950\",\n    \"otp\": \"991229\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/payment/verify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"verify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updatecard",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \n    \"cardNumber\": \"3333333333333333\",\n    \"cardHolder\": \"xyz sharma\",\n    \"expiryDate\": \"2022-10-01\",\n    \"cvv\": \"123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/payment/updatecard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"updatecard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deletecard",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8088/payment/deletecard/3333333333333333",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"deletecard",
+						"3333333333333333"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "allcards",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8088/payment/allcards",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"allcards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refund",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "6700b05d79547251a66f4950",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/payment/refund",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"refund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "history",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:8088/payment/history/4444444444444444",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"history",
+						"4444444444444444"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "recurring",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cardNumber\": \"4444444444444444\",\n    \"amount\": 1000.00,\n    \"frequency\": \"MONTHLY\",\n    \"startDate\": \"2024-10-05\",\n    \"endDate\": \"2025-10-05\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/payment/recurring",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"recurring"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n{\n    \"searchKey\": \"cardNumber\",\n    \"searchValue\": \"4444444444444444\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/search/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"search",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancel_transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8088/payment/cancel/670ee05652d36523515c9354",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"cancel",
+						"670ee05652d36523515c9354"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8088/payment/status/670ee05652d36523515c9354",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"status",
+						"670ee05652d36523515c9354"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
