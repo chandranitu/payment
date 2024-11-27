@@ -7,7 +7,7 @@ public class PaymentRequest {
 	private String cardNumber;
 	private String cvv;
 	private BigDecimal amount;
-	
+	private String cardType;  
 	
 	public String getCardNumber() {
 		return cardNumber;
@@ -26,6 +26,12 @@ public class PaymentRequest {
 	}
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+	public String getCardType() {
+		return cardType;
+	}
+	public void setCardType(String cardType) {
+		this.cardType = cardType;
 	}
 	
 	
