@@ -39,8 +39,7 @@ public class CreditCard {
     private LocalDateTime lastPaymentDate; // The date of the last payment
     private String currency; // The currency used for transactions (e.g., USD, EUR)
     private String securityQuestion; // Security question for card recovery
-    private String securityAnswer; // The answer to the security question
-
+    private String securityAnswer; // The answer to the security question    
     private String createdBy; // User who created the record
     private String updatedBy; // User who last updated the record
 
@@ -355,4 +354,16 @@ public class CreditCard {
         logger.debug("setUpdatedAt called with updatedAt: {}", updatedAt);
         this.updatedAt = updatedAt;
     }
+
+    public void topUp(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+            this.balance = this.balance.add(amount); // Add the amount to the current balance
+            logger.debug("Top-up successful. New balance: {}", this.balance);
+        } else {
+            logger.warn("Invalid top-up amount: {}", amount);
+        }
+    }
+    
+
+    
 }

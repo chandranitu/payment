@@ -140,21 +140,21 @@ Success-- (204 No Content):
 
 # return all cards
 
-Method: GET
+--method: GET
 
 URL: http://localhost:8088/payment/allcards
 
 
 # return all transactions for a particular card
 
-Method: GET
+--method: GET
 
 URL: http://localhost:8088/payment/history/4444444444444444
 
 
 # recurring payment
 
-method post
+--method post
 
 http://localhost:8088/payment/recurring
 
@@ -171,7 +171,7 @@ response- Recurring payment scheduled with ID: 91b94f6f-e0d4-4a0d-9fe3-89c2bc22c
 
 # Search service
 
-method get
+--method get
 
 http://localhost:8088/search/all
 
@@ -183,7 +183,7 @@ http://localhost:8088/search/all
 
 # Transaction status 
 
-method get
+--method get
 
 http://localhost:8088/payment/status/670ee05652d36523515c9354
 
@@ -191,7 +191,7 @@ http://localhost:8088/payment/status/670ee05652d36523515c9354
 
 # Cancel a pending Transaction  
 
-method post
+--method post
 
 http://localhost:8088/payment/cancel/670ee05652d36523515c9354
 
@@ -200,15 +200,34 @@ http://localhost:8088/payment/cancel/670ee05652d36523515c9354
 https://memgraph.com/blog/how-to-develop-a-credit-card-fraud-detection-application-using-memgraph-flask-and-d3js
 https://www.romexsoft.com/blog/implement-credit-card-fraud-detection/
 
-method get
+--method get
 
 http://localhost:8088/payment/fraud-check/670ee05652d36523515c9354
 
-# payment limit 
+
+# Spending limit 
+
+--method post
+
+http://localhost:8080/payment/set-limit
+
+{
+    "cardNumber": "6666666006666666",
+    "limit": "2000"
+}
+
+# Top Up credit card
+
+ --method -put
+
+http://localhost:8088/payment/topupcard
 
 
-
-
+{
+    "cardNumber": "6666666006666666",
+    "amount": 1000.00,
+    "updatedBy": "user123"
+}
 
 
 # Mongo commands
@@ -219,55 +238,9 @@ db.credit_cards.find();
 
 show collections
 
-db.credit_cards.insertMany([
-    {
-        "cardNumber": "1234567812345678",
-        "cardHolder": "Chandra Shekhar",
-        "cvv": "123",
-        "expiryDate": ISODate("2025-12-31T00:00:00Z"),   // MongoDB stores dates in ISO format
-        "balance": NumberDecimal("5000.00")
-    },
-    {
-        "cardNumber": "1234123412341234",
-        "cardHolder": "Nitu Prabha",
-        "cvv": "345",
-        "expiryDate": ISODate("2026-12-31T00:00:00Z"),
-        "balance": NumberDecimal("5000.00")
-    }
-]);
 
-db.transactions.insertMany([
-    {
-        "creditCard": ObjectId("66fb13c1218c02f140964037"),  
-        "amount": NumberDecimal("100.00"),
-        "otp": "123456",
-        "status": "pending",
-        "createdAt": new Date()  
-    },
-    {
-        "creditCard": ObjectId("66fb13c1218c02f140964038"),  
-        "amount": NumberDecimal("100.00"),
-        "otp": "654321",
-        "status": "approved",
-        "createdAt": new Date()
-    }
-]);
 
 db.credit_cards.find({"cardNumber": "1234567812345678"}, {_id: 1});
-
-
-db.otp_requests.insertMany([
-    {
-        "creditCard": ObjectId("66fb13c1218c02f140964037"),  
-        "otp": "123456",
-        "expiresAt": new Date(new Date().getTime() + 5 * 60 * 1000)  // Adds 5 minutes to the current time
-    },
-    {
-        "card_id": ObjectId("66fb13c1218c02f140964038"),  
-        "otp": "654321",
-        "expiresAt": new Date(new Date().getTime() + 1 * 60 * 1000)  // Adds 1 minute to the current time
-    }
-]);
 
 
 

@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.CreditCard;
@@ -20,6 +22,7 @@ import com.example.model.RecurringPayment;
 import com.example.model.Transaction;
 import com.example.request.OtpVerificationRequest;
 import com.example.request.PaymentRequest;
+import com.example.request.TopUpRequest;
 import com.example.service.PaymentService;
 import com.example.service.RecurringService;
 import com.example.service.TransactionNotFoundException;
@@ -72,7 +75,8 @@ public class PaymentController {
 
     @PostMapping("/initiate")
     public ResponseEntity<Transaction> initiatePayment(@RequestBody PaymentRequest request) {
-        Transaction transaction = paymentService.initiatePayment(request.getCardNumber(), request.getCardType(),request.getCvv(),
+        Transaction transaction = paymentService.initiatePayment(request.getCardNumber(), request.getCardType(),
+                request.getCvv(),
                 request.getAmount()); // Initiate payment using the service
         return ResponseEntity.ok(transaction); // Return the transaction details with 200 status
     }
@@ -243,6 +247,17 @@ public class PaymentController {
     public ResponseEntity<Boolean> fraudCheck(@PathVariable String transactionId) {
         boolean isFraudulent = paymentService.checkForFraud(transactionId); // Check if the transaction is fraudulent
         return ResponseEntity.ok(isFraudulent); // Return fraud status with 200 status
+    }
+
+    @PutMapping("/topupcard")
+    public ResponseEntity<CreditCard> topupCreditCard(@RequestBody TopUpRequest topUpRequest) throws Exception {
+        // Call the service layer to top-up the card
+        CreditCard updatedCard = paymentService.topupCreditCard(
+                topUpRequest.getCardNumber(),
+                topUpRequest.getAmount(),
+                topUpRequest.getUpdatedBy());
+
+        return ResponseEntity.ok(updatedCard); // Return the updated card with 200 status
     }
 
 }

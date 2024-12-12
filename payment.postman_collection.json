@@ -43,7 +43,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\n{\n    \"cardNumber\": \"4444444444444444\",\n    \"cvv\": \"555\",\n    \"amount\": 1500.00\n}",
+					"raw": "\n{\n    \"cardNumber\": \"6666666006666666\",\n    \"cvv\": \"999\",\n    \"cardType\": \"Visa\",\n    \"amount\": 111.00\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -72,7 +72,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"transactionId\": \"6700b05d79547251a66f4950\",\n    \"otp\": \"991229\"\n}\n",
+					"raw": "{\n    \"transactionId\": \"675a765ffb855d45bd93f506\",\n    \"otp\": \"462298\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -101,7 +101,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{    \n    \"cardNumber\": \"3333333333333333\",\n    \"cardHolder\": \"xyz sharma\",\n    \"expiryDate\": \"2022-10-01\",\n    \"cvv\": \"123\"\n}",
+					"raw": "{    \n    \"cardNumber\": \"6666666006666666\",\n    \"cardHolder\": \"xyz sharma\",\n    \"expiryDate\": \"2022-10-01\",\n    \"balance\": 123456.00,\n    \"cardType\":\"Visa\",\n    \"cvv\": \"123\"\n}\n\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -146,9 +146,36 @@
 		},
 		{
 			"name": "allcards",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test123",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "http://localhost:8088/payment/allcards",
 					"protocol": "http",
@@ -171,7 +198,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "6700b05d79547251a66f4950",
+					"raw": "6746e78235eea3613fc3fc4f",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -206,7 +233,7 @@
 					"formdata": []
 				},
 				"url": {
-					"raw": "http://localhost:8088/payment/history/4444444444444444",
+					"raw": "http://localhost:8088/payment/history/6666666006666666",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -215,7 +242,7 @@
 					"path": [
 						"payment",
 						"history",
-						"4444444444444444"
+						"6666666006666666"
 					]
 				}
 			},
@@ -288,7 +315,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8088/payment/cancel/670ee05652d36523515c9354",
+					"raw": "http://localhost:8088/payment/cancel/6746e78235eea3613fc3fc4f",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -297,7 +324,7 @@
 					"path": [
 						"payment",
 						"cancel",
-						"670ee05652d36523515c9354"
+						"6746e78235eea3613fc3fc4f"
 					]
 				}
 			},
@@ -309,7 +336,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8088/payment/status/670ee05652d36523515c9354",
+					"raw": "http://localhost:8088/payment/status/675a765ffb855d45bd93f506",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -318,7 +345,76 @@
 					"path": [
 						"payment",
 						"status",
-						"670ee05652d36523515c9354"
+						"675a765ffb855d45bd93f506"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "limit",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test123",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"cardNumber\": \"6666666006666666\",\n\"limit\": \"2000\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/payment/set-limit/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment",
+						"set-limit",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "topupcard",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"6666666006666666\",\n    \"amount\": 25000.00,\n    \"updatedBy\": \"user123\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/payment/topupcard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"payment",
+						"topupcard"
 					]
 				}
 			},

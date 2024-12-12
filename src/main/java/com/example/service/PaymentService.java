@@ -359,4 +359,31 @@ public class PaymentService {
 		return false;
 	}
 
+	
+
+	public CreditCard topupCreditCard(String cardNumber, BigDecimal amount, String updatedBy) throws Exception {
+		// Fetch the card using the card number from the database (assuming you have a repository or database method)
+		Optional<CreditCard> creditCardOpt = creditCardRepository.findByCardNumber(cardNumber);
+		
+		if (creditCardOpt.isPresent()) {
+			CreditCard creditCard = creditCardOpt.get();
+			
+			// Add the top-up amount to the balance
+			creditCard.topUp(amount);
+			
+			// Optionally, you could update the `updatedBy` and `updatedAt` fields as well
+			creditCard.setUpdatedBy(updatedBy);
+			creditCard.setUpdatedAt(LocalDateTime.now());
+	
+			// Save the updated card back to the database
+			creditCardRepository.save(creditCard);
+	
+			return creditCard; // Return the updated credit card
+		} else {
+			// Handle the case where the credit card is not found
+			throw new Exception("Card with number " + cardNumber + " not found.");
+		}
+	}
+	
+
 }
