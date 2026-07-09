@@ -4,7 +4,7 @@ mvn clean install -U
 
 mvn dependency:tree
 
-mvn spring-boot:run
+mvn spring-boot:run 
 
 mvn javadoc:javadoc
 
@@ -24,19 +24,31 @@ http://localhost:8088/actuator/mappings
 
 docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 -p 27017:27017 mongo
 
-docker exec -it  mongo bash   #run mongo
+sudo docker exec -it  mongo bash   #run mongo
 
 use admin;
-
+mongosh  --host localhost --port 27017 --username admin --password admin123
 mongosh  --host localhost --port 27017 --username testUser --password testUser
 
 # dev
 
+#connect as root to test for mongo is working
+
+mongosh "mongodb://admin:admin123@localhost:27017/admin"
+
+>mongosh
+
+use test;
+
 db.createUser({
   user: "testUser",
   pwd: "testUser",
-  roles: [{ role: "dbAdmin", db: "test" },
-  { role: "readWrite", db: "admin" } ]
+  roles: [
+    {
+      role: "readWrite",
+      db: "test"
+    }
+  ]
 })
 
 # QA
@@ -304,3 +316,21 @@ INSERT INTO otp_requests (card_id, otp, expires_at)
 VALUES (1, '123456', CURRENT_TIMESTAMP + INTERVAL '5 minutes');
 INSERT INTO otp_requests (card_id, otp, expires_at)
 VALUES (2, '654321', CURRENT_TIMESTAMP + INTERVAL '1 minutes');
+
+
+##
+docker network create payment-network
+
+docker run -d \
+  --name mongodb \
+  --network payment-network \
+  -p 27017:27017 \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=admin123 \
+  mongo:latest
+
+  docker run -d \
+  --name payment \
+  --network payment-network \
+  -p 8088:8088 \
+  payment:latest
