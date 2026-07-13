@@ -27,6 +27,7 @@ docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_R
 sudo docker exec -it  mongo bash   #run mongo
 
 use admin;
+
 mongosh  --host localhost --port 27017 --username admin --password admin123
 
 mongosh  --host localhost --port 27017 --username testUser --password testUser
