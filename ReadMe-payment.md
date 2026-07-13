@@ -21,6 +21,7 @@ docker build -t payment .
 docker run -d --name pay123 -p 8088:8088  payment   
 
 #run with network
+
 docker network create payment-network
 
 docker run -d \
