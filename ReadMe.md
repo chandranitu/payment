@@ -81,6 +81,7 @@ db.auth("testUser", passwordPrompt()) ;
 http://localhost:8088/payment/status
 
 
+
 # Add credit card -- post method
 
 http://localhost:8088/payment/addcard
