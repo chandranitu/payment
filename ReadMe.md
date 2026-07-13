@@ -28,6 +28,7 @@ sudo docker exec -it  mongo bash   #run mongo
 
 use admin;
 mongosh  --host localhost --port 27017 --username admin --password admin123
+
 mongosh  --host localhost --port 27017 --username testUser --password testUser
 
 # dev
