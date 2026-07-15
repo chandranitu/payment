@@ -1,0 +1,64 @@
+services:
+ 
+  jen-mvn:
+    image: jenkins-maven-docker
+    container_name: jenkins
+    user: root
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - payment-network
+
+  db:
+    image: postgres:16
+    container_name: postgresDb
+    restart: always
+    environment:
+      POSTGRES_USER: sonartest
+      POSTGRES_PASSWORD: sonartest
+      POSTGRES_DB: sonar
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - payment-network
+
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "9001:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+      SONAR_JDBC_USERNAME: sonartest
+      SONAR_JDBC_PASSWORD: sonartest
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_bundled_plugins:/opt/sonarqube/lib/bundled-plugins
+    networks:
+      - payment-network
+
+networks:
+  payment-network:
+    external: true
+
+volumes:  
+  jenkins_home:
+  postgresql:
+  postgresql_data:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_conf:
+  sonarqube_bundled_plugins:
