@@ -1,6 +1,11 @@
 # check payment application config file. Application.properties
 
-# check pom file for dependency prometheus. Add dependency
+# check pom.xml file for dependency prometheus. Add dependency
+
+<dependency>
+    		<groupId>io.micrometer</groupId>
+    		<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
 
 # Add in Application.properties (payment src)
 management.endpoints.web.exposure.include=health,info,prometheus
