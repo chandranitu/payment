@@ -2,6 +2,12 @@
 
 # check pom file for dependency prometheus. Add dependency
 
+# Add in Application.properties (payment src)
+management.endpoints.web.exposure.include=health,info,prometheus
+management.endpoint.prometheus.enabled=true
+management.prometheus.metrics.export.enabled=true
+
+
 # prometheus yml file while docker compose up
 
 # mongo DB user creation for payment application. testUser
